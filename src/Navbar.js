@@ -1,16 +1,17 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, makeStyles } from '@material-ui/core';
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   appBar: {
-    backgroundColor: 'blue', // Set your desired background color here
+    backgroundColor: 'blue',
   },
   title: {
     flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: 'white', 
+    color: 'white',
   },
 }));
 
@@ -21,7 +22,7 @@ function Navbar() {
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          DocBot-Your Medical Assistant
+          DocBot - Your Medical Assistant
         </Typography>
       </Toolbar>
     </AppBar>

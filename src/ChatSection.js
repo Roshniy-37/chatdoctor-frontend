@@ -22,7 +22,7 @@ function ChatSection() {
     color: 'yellow',
   };
 
-  const doneMessageStyle = {
+  const botMessageStyle = {
     marginBottom: '16px',
     textAlign: 'left',
     color: 'white',
@@ -40,19 +40,37 @@ function ChatSection() {
     backgroundColor: 'white',
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim() === '') return;
 
     const userMessage = { text: message, fromUser: true };
-    const doneMessage = { text: 'Done', fromUser: false };
-
+    setMessages(prev => [userMessage, ...prev]);
     
-    setMessages([doneMessage, userMessage, ...messages]);
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await res.json();
+      console.log(data.response);
+      const botMessage = {
+        text: data.response || 'Sorry, no response received.',
+        fromUser: false,
+      };
+
+      setMessages(prev => [botMessage, ...prev]);
+    } catch (err) {
+      const errorMessage = {
+        text: 'Error communicating with server.',
+        fromUser: false,
+      };
+      setMessages(prev => [errorMessage, ...prev]);
+    }
 
     setMessage('');
   };
-
-
 
   useEffect(() => {
     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -65,7 +83,7 @@ function ChatSection() {
           <Typography
             key={index}
             variant="body1"
-            style={msg.fromUser ? { ...userMessageStyle } : { ...doneMessageStyle }}
+            style={msg.fromUser ? userMessageStyle : botMessageStyle}
           >
             {msg.text}
           </Typography>
